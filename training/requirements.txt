@@ -1,0 +1,12 @@
+prefect
+mlflow
+gensim
+numpy
+pandas
+ipython
+matplotlib
+Jinja2
+seaborn
+dtreeviz
+simplejson
+openpyxl

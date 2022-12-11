@@ -1,0 +1,13 @@
+fastapi
+dill
+numpy
+uvicorn
+pydantic
+pandas
+gensim
+ipython
+Jinja2
+kolibri-ml
+seaborn
+dtreeviz
+simplejson
