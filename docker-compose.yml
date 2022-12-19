@@ -10,7 +10,7 @@ services:
     depends_on:
       - service
 
-  train:
+  training:
     build: training
     depends_on:
       - mlflow
@@ -20,7 +20,7 @@ services:
     ports:
       - 4200:4200
     volumes:
-      - models:/mlruns
+      - data:/mlruns
 
   service:
     build: service
@@ -32,7 +32,27 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - models:/mlruns
+      - data:/mlflow
+    environment:
+      BACKEND_URI: sqlite:////mlflow/mlflow.db
+      ARTIFACT_ROOT: /mlflow/artifacts
 
+#  lab:
+#    build:
+#        context: jupyter
+#        dockerfile: Dockerfile
+#        # environment:
+#    ports:
+#        - "8888:8888"
+#    tty: true
+#    command:
+#        jupyter lab
+#            --ip=0.0.0.0
+#            --allow-root
+#            --no-browser
+#            --NotebookApp.token=''
+#            --NotebookApp.notebook_dir='/notebooks'
+#    volumes:
+#            - ./data:/notebooks
 volumes:
-  models:
+  data:

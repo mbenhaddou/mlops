@@ -14,7 +14,7 @@
                 "normalize": true,
                 "remove-numbers": false,
                 "filters": "!\"’«#$%&()*+,-./:;<=>?@[\\]^_`'{|}~\t\n",
-                "language": "fr",
+                "language": "en",
                 "opt-metric-name": "f1-score",
                 "optimize-estimator": false,
                 "max-time-for-optimization": 3600,
@@ -30,7 +30,7 @@
             },
             "tunable": {},
             "model_file": "WordTokenizer.pkl",
-            "folder": "./model/current",
+            "folder": "/app/model/current",
             "label": "kolibri.tokenizers.word_tokenizer.WordTokenizer",
             "name": "WordTokenizer"
         },
@@ -43,7 +43,7 @@
                 "case-sensitive": true,
                 "use-bigram-model": false,
                 "remove-stopwords": true,
-                "language": "fr",
+                "language": "en",
                 "opt-metric-name": "f1-score",
                 "optimize-estimator": false,
                 "max-time-for-optimization": 3600,
@@ -60,11 +60,11 @@
             "tunable": {
                 "min-df": {
                     "description": "min document frequency of a word to add to vocabulary. If float - the parameter represents a proportion of documents. If integer - absolute counts",
-                    "value": 5,
+                    "value": 0.01,
                     "type": "float",
                     "range": [
                         0,
-                        0.4
+                        0.3
                     ]
                 },
                 "max-df": {
@@ -99,13 +99,13 @@
                     "value": 20000,
                     "type": "integer",
                     "values": [
-                        1000,
-                        10000
+                        10000,
+                        60000
                     ]
                 }
             },
             "featurizer_file": "TFIDFFeaturizer.pkl",
-            "folder": "./model/current",
+            "folder": "/app/model/current",
             "label": "kolibri.features.text.tf_idf_featurizer.TFIDFFeaturizer",
             "name": "TFIDFFeaturizer"
         },
@@ -129,7 +129,7 @@
                 "round": 4,
                 "display": "default",
                 "default-params": null,
-                "language": "fr",
+                "language": "en",
                 "opt-metric-name": "f1-score",
                 "max-time-for-optimization": 3600,
                 "random-state": 41,
@@ -154,7 +154,8 @@
                                 "values": [
                                     "l1",
                                     "l2",
-                                    "none"
+                                    "None",
+                                    "elasticnet"
                                 ]
                             },
                             "class_weight": {
@@ -162,7 +163,7 @@
                                 "type": "categorical",
                                 "values": [
                                     "balanced",
-                                    "None"
+                                    null
                                 ]
                             },
                             "solver": {
@@ -170,7 +171,8 @@
                                 "type": "categorical",
                                 "values": [
                                     "newton-cg",
-                                    "lbfgs"
+                                    "lbfgs",
+                                    "liblinear"
                                 ]
                             },
                             "multi_class": {
@@ -182,6 +184,14 @@
                                     "multinomial"
                                 ]
                             },
+                            "max_iter": {
+                                "value": 100,
+                                "type": "integer",
+                                "values": [
+                                    200,
+                                    2000
+                                ]
+                            },
                             "C": {
                                 "value": 1.0,
                                 "type": "float",
@@ -189,9 +199,6 @@
                                     0.1,
                                     10
                                 ]
-                            },
-                            "max_iter": {
-                                "value": 1000
                             }
                         },
                         "name": "logistic_regression",
@@ -205,92 +212,92 @@
             "classifier_file": "classifier_kolibri.pkl",
             "performace_scores": {
                 "Accuracy": {
-                    "Mean": 0.7911,
-                    "Std": 0.0035
+                    "Mean": 0.5707,
+                    "Std": 0.0033
                 },
                 "AUC": {
-                    "Mean": 0.9333,
-                    "Std": 0.0016
+                    "Mean": 0.7653,
+                    "Std": 0.0044
                 },
                 "Recall": {
-                    "Mean": 0.7911,
-                    "Std": 0.0035
+                    "Mean": 0.5707,
+                    "Std": 0.0033
                 },
                 "Prec.": {
-                    "Mean": 0.8105,
-                    "Std": 0.0029
+                    "Mean": 0.6573,
+                    "Std": 0.009
                 },
                 "F1": {
-                    "Mean": 0.7918,
-                    "Std": 0.0038
+                    "Mean": 0.5143,
+                    "Std": 0.0043
                 },
                 "Kappa": {
-                    "Mean": 0.7055,
-                    "Std": 0.0049
+                    "Mean": 0.3568,
+                    "Std": 0.0051
                 },
                 "MCC": {
-                    "Mean": 0.7137,
-                    "Std": 0.0043
+                    "Mean": 0.435,
+                    "Std": 0.0067
                 },
                 "Confusion_matrix": {
                     "body": {
-                        "body": 9818,
-                        "signature": 3168,
-                        "header": 616,
-                        "salutation": 356,
-                        "disclaimer": 296,
-                        "caution": 38
+                        "body": 10716,
+                        "signature": 7807,
+                        "header": 1206,
+                        "salutation": 1555,
+                        "disclaimer": 798,
+                        "caution": 384
                     },
                     "signature": {
-                        "body": 1156,
-                        "signature": 6194,
-                        "header": 58,
-                        "salutation": 76,
-                        "disclaimer": 188,
-                        "caution": 2
+                        "body": 543,
+                        "signature": 1382,
+                        "header": 55,
+                        "salutation": 9,
+                        "disclaimer": 150,
+                        "caution": 21
                     },
                     "header": {
-                        "body": 94,
-                        "signature": 37,
-                        "header": 4476,
+                        "body": 83,
+                        "signature": 38,
+                        "header": 3802,
                         "salutation": 0,
-                        "disclaimer": 8,
-                        "caution": 0
+                        "disclaimer": 33,
+                        "caution": 9
                     },
                     "salutation": {
-                        "body": 35,
-                        "signature": 10,
+                        "body": 0,
+                        "signature": 0,
                         "header": 0,
-                        "salutation": 1489,
-                        "disclaimer": 1,
+                        "salutation": 352,
+                        "disclaimer": 0,
                         "caution": 0
                     },
                     "disclaimer": {
-                        "body": 18,
-                        "signature": 92,
-                        "header": 2,
-                        "salutation": 0,
-                        "disclaimer": 1366,
-                        "caution": 0
+                        "body": 71,
+                        "signature": 102,
+                        "header": 3,
+                        "salutation": 1,
+                        "disclaimer": 869,
+                        "caution": 9
                     },
                     "caution": {
-                        "body": 9,
-                        "signature": 4,
-                        "header": 1,
+                        "body": 1,
+                        "signature": 0,
+                        "header": 0,
                         "salutation": 0,
                         "disclaimer": 1,
-                        "caution": 391
+                        "caution": 0
                     }
                 },
-                "Class_report": "              precision    recall  f1-score   support\n\n        body       0.69      0.88      0.77     11130\n   signature       0.81      0.65      0.72      9505\n      header       0.97      0.87      0.92      5153\n  salutation       0.97      0.78      0.86      1921\n  disclaimer       0.92      0.73      0.82      1860\n     caution       0.96      0.91      0.93       431\n\n    accuracy                           0.79     30000\n   macro avg       0.89      0.80      0.84     30000\nweighted avg       0.81      0.79      0.79     30000\n"
+                "Class_report": "              precision    recall  f1-score   support\n\n        body       0.48      0.94      0.63     11414\n   signature       0.64      0.15      0.24      9329\n      header       0.96      0.75      0.84      5066\n  salutation       1.00      0.18      0.31      1917\n  disclaimer       0.82      0.47      0.60      1851\n     caution       0.00      0.00      0.00       423\n\n    accuracy                           0.57     30000\n   macro avg       0.65      0.42      0.44     30000\nweighted avg       0.66      0.57      0.51     30000\n"
             },
             "label": "kolibri.task.text.classification.sklearn_classification_estimator.SklearnEstimator",
             "name": "SklearnEstimator"
         }
     ],
     "X_schema": {
-        "Text": "300 Boston Scientific Way I Marlborough, MA 01752"
+        "Text": "A partir da data: 27/02/2020"
     },
-    "trained_at": "20221210-233903",
-    "kolibri_version": "1.0.97"
+    "trained_at": "20221218-191647",
+    "kolibri_version": "1.1.6"
 }

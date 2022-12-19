@@ -1,6 +1,4 @@
-import cProfile
 import os
-import mlflow
 
 import pandas as pd
 from kolibri.config import ModelConfig
@@ -13,7 +11,7 @@ from datetime import timedelta
 
 
 @task
-def get_config(output_folder: str='./model'):
+def get_config(model_name, output_folder: str='./model', optimize=False, budget=3600, calibrate=False, register=False):
     """
     Test multi label classification
     """
@@ -23,26 +21,23 @@ def get_config(output_folder: str='./model'):
 
     confg['format'] = 'csv'
     confg['track-experiments']=True
-    confg['register-model']=True
-    confg['calibrate-model']=True
+    confg['register-model']=register
+    confg['calibrate-model']=calibrate
     confg['experiment-uri']=os.getenv('MLFLOW_TRACKING_URI')
     confg['experiment-name']='email_signature'
     confg['remove-stopwords'] = True
-    confg['language'] = 'fr'
+    confg['model-name']=model_name
     confg['do-lower-case'] = True
+    confg['max-time-for-optimization'] = budget
 
- #   confg["sequence_length"] = 60
-    confg['language']='fr'
-    confg['log-plots']=[]#["pr", "confusion_matrix", "roc", "errors",  "class_report", "calibration"]
+    confg['language']='en'
     confg["multi-label"] = False
     confg["evaluate-performance"] = True
     confg['max-features'] = 20000
     confg['output-folder'] = output_folder
     confg['pipeline']= ['WordTokenizer', 'TFIDFFeaturizer', 'SklearnEstimator']
     confg["model"] = 'LogisticRegression'
-#    confg['pipeline'] = ['DnnTextClassEstimator']
-#    confg["model"] = 'cnn_attention'
-
+    confg['optimize-pipeline']=optimize
     confg['n-jobs']=-1
 
     return confg
@@ -68,9 +63,9 @@ def train_model(configs, X, y):
     data.columns=["Text"]
     trainer.fit(data, y)
     return trainer
+
 @task
 def save_model(trainer, save_path):
-
     model_directory = trainer.persist(save_path, fixed_model_name="current")
 @task
 def load_model(save_path):
@@ -93,17 +88,25 @@ def lanuch_api(path):
     exec(script)
 
 @flow(name="modeling")
-def training(content_col="Text", target_col="Category", save_path="./model"):
+def training(model_name, content_col="Text", target_col="Category"):
     data = load_data()
-    config=get_config()
+    config=get_config(model_name=model_name)
+    X, y = transform_data(data, content_col, target_col)
+
+    model = train_model(config, X, y)
+    save_model(model, "model")
+@flow(name="better-model")
+def seach_better_models(model_name, content_col="Text", target_col="Category", metric="F1"):
+    os.environ["MLFLOW_TRACKING_URI"]="http://mentis.io/mlflow"
+    data = load_data()
+    config=get_config(model_name=model_name,optimize=True, budget=30)
     X, y = transform_data(data, content_col, target_col)
 
     model = train_model(config, X, y)
 
-    save_model(model, save_path)
 
-    model_interpreter=load_model(save_path)
-    create_api(model_interpreter, os.path.join(save_path,"api_script"))
+
+
 
 @flow(name="prediction")
 def prediction(script_path):
@@ -111,5 +114,6 @@ def prediction(script_path):
 
 
 if __name__ == "__main__":
+
 #    prediction("model/api_script.py")
-    training()
+    seach_better_models('email_signature')

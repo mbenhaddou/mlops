@@ -10,7 +10,7 @@ We spin both the containers together using `Docker Compose`.
 
 Create a prefect deployment for the training server.
  
-`prefect deployment build training.py:training -n train-classifier -q dev`
+`prefect deployment build training.py:training -n train-classifier -q ml`
 
 
 ## How to use

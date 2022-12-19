@@ -5,11 +5,11 @@ name: train-classifier
 description: null
 version: 9d8eb8f6056271c56ab171c0f52228f8
 # The work queue that will handle this deployment's runs
-work_queue_name: dev
+work_queue_name: ml
 tags: []
-parameters: {}
+parameters: {"model_name":"email_signature"}
 schedule:
-  interval: 60
+  interval: 300
 infra_overrides: {}
 infrastructure:
   type: process
@@ -25,11 +25,11 @@ infrastructure:
 ###
 ### DO NOT EDIT BELOW THIS LINE
 ###
-flow_name: modeling
+flow_name: better-model
 manifest_path: null
 storage: null
-path: /Users/mohamedmentis/Downloads/mlops/training
-entrypoint: training.py:training
+path: /training
+entrypoint: training.py:seach_better_models
 parameter_openapi_schema:
   title: Parameters
   type: object

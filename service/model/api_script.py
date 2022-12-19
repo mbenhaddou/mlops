@@ -4,6 +4,7 @@ from fastapi import FastAPI
 import uvicorn
 from pydantic import create_model
 from kolibri.model_loader import ModelLoader
+
 import os
 import pandas as pd
 

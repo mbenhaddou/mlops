@@ -11,6 +11,7 @@ deployment = Deployment.build_from_flow(
     name="model_training_validation",
     schedule=IntervalSchedule(interval=timedelta(minutes=5)),
     work_queue_name="ml",
+    parameters={"model_name":"email_signature"}
 )
 
 if __name__ == "__main__":

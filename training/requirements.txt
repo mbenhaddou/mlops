@@ -10,3 +10,4 @@ seaborn
 dtreeviz
 simplejson
 openpyxl
+optuna
