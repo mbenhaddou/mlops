@@ -1,14 +1,24 @@
 FROM python:3.8
 
-WORKDIR /mlflow/
+RUN mkdir -p /mlflow/mlruns
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
-  rm requirements.txt
+WORKDIR /mlflow
 
-EXPOSE 5000
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
-ENV BACKEND_URI sqlite:////mlflow/mlflow.db
-ENV ARTIFACT_ROOT /mlflow/artifacts
+RUN echo "export LC_ALL=$LC_ALL" >> /etc/profile.d/locale.sh
+RUN echo "export LANG=$LANG" >> /etc/profile.d/locale.sh
 
-CMD mlflow server --backend-store-uri ${BACKEND_URI} --default-artifact-root ${ARTIFACT_ROOT} --host 0.0.0.0 --port 5000
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libpq-dev
+
+RUN pip install -U pip && \
+    pip install  mlflow
+
+COPY ./start.sh ./start.sh
+RUN chmod +x ./start.sh
+
+CMD ["./start.sh"]

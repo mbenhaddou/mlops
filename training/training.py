@@ -97,9 +97,9 @@ def training(model_name, content_col="Text", target_col="Category"):
     save_model(model, "model")
 @flow(name="better-model")
 def seach_better_models(model_name, content_col="Text", target_col="Category", metric="F1"):
-    os.environ["MLFLOW_TRACKING_URI"]="http://mentis.io/mlflow"
+#    os.environ["MLFLOW_TRACKING_URI"]="http://mentis.io/mlflow"
     data = load_data()
-    config=get_config(model_name=model_name,optimize=True, budget=30)
+    config=get_config(model_name=model_name,optimize=True, budget=1800)
     X, y = transform_data(data, content_col, target_col)
 
     model = train_model(config, X, y)

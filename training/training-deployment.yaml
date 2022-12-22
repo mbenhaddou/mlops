@@ -9,7 +9,7 @@ work_queue_name: ml
 tags: []
 parameters: {"model_name":"email_signature"}
 schedule:
-  interval: 300
+  interval: 3000
 infra_overrides: {}
 infrastructure:
   type: process
