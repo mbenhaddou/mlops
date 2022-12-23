@@ -6,7 +6,6 @@ services:
     ports:
       - 8501:8501
     volumes:
-      - ${ARTIFACT_PATH}:${ARTIFACT_PATH}
       - data:/model
     depends_on:
       - service
@@ -28,6 +27,11 @@ services:
     build: service
     ports:
       - 8000:8000
+    depends_on:
+      - mlflow
+    volumes:
+      - ${ARTIFACT_PATH}:${ARTIFACT_PATH}
+      - data:/app/model
 
   mlflow:
     build: mlflow
@@ -46,22 +50,23 @@ services:
     command: ./start.sh
 
 
-#  lab:
-#    build:
-#        context: jupyter
-#        dockerfile: Dockerfile
-#        # environment:
-#    ports:
-#        - "8888:8888"
-#    tty: true
-#    command:
-#        jupyter lab
-#            --ip=0.0.0.0
-#            --allow-root
-#            --no-browser
-#            --NotebookApp.token=''
-#            --NotebookApp.notebook_dir='/notebooks'
-#    volumes:
-#            - ./data:/notebooks
+  lab:
+    build:
+        context: jupyter
+        dockerfile: Dockerfile
+        # environment:
+    ports:
+        - "8888:8888"
+    tty: true
+    command:
+        jupyter lab
+            --ip=0.0.0.0
+            --allow-root
+            --no-browser
+            --NotebookApp.token=''
+            --NotebookApp.notebook_dir='/notebooks'
+    volumes:
+            - ./data:/notebooks
+            - ${ARTIFACT_PATH}:${ARTIFACT_PATH}
 volumes:
   data:

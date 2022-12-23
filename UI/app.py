@@ -9,8 +9,9 @@ def main():
 
     if st.button('Predict'):
         payload = {
-            "text": message
+            "Text": message
         }
+        print(payload)
         res = requests.post(f"http://service:8000/predict/",json=payload )
         with st.spinner('Classifying, please wait....'):
             st.write(res.json())

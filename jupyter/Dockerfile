@@ -1,4 +1,4 @@
-FROM jupyter/datascience-notebook:latest
+FROM jupyter/minimal-notebook:python-3.8
 
 WORKDIR /notebooks/
 

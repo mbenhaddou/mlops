@@ -7,7 +7,7 @@ from kolibri.model_trainer import ModelTrainer
 from prefect import task, flow
 from prefect.tasks import task_input_hash
 from datetime import timedelta
-
+from kdmt.mlflow import get_stage_version, get_best_run, register_model
 
 
 @task
@@ -39,7 +39,7 @@ def get_config(model_name, output_folder: str='./model', optimize=False, budget=
     confg["model"] = 'LogisticRegression'
     confg['optimize-pipeline']=optimize
     confg['n-jobs']=-1
-
+    confg['optimization-n-jobs']=1
     return confg
 @task(cache_key_fn=task_input_hash, cache_expiration=timedelta(days=1))
 def load_data():
@@ -97,7 +97,7 @@ def training(model_name, content_col="Text", target_col="Category"):
     save_model(model, "model")
 @flow(name="better-model")
 def seach_better_models(model_name, content_col="Text", target_col="Category", metric="F1"):
-#    os.environ["MLFLOW_TRACKING_URI"]="http://mentis.io/mlflow"
+
     data = load_data()
     config=get_config(model_name=model_name,optimize=True, budget=1800)
     X, y = transform_data(data, content_col, target_col)
@@ -106,7 +106,19 @@ def seach_better_models(model_name, content_col="Text", target_col="Category", m
 
 
 
+@flow(name="select_model")
+def find_model_condidate():
+    tolerance = 0.01
 
+    prod_version = get_stage_version("email_signature")
+    best_run=get_best_run("email_signature", "F1")
+
+    is_after_prod=best_run['start_time']>prod_version['creation_timestamp']
+
+    if is_after_prod and prod_version['metrics']['F1'] < best_run['metrics']['F1']*(1-tolerance):
+        print('Found Better model')
+        artifact=prod_version["source"].split('/')[-1]
+        register_model("email_signature", artifact, stage="Production")
 
 @flow(name="prediction")
 def prediction(script_path):
@@ -114,6 +126,6 @@ def prediction(script_path):
 
 
 if __name__ == "__main__":
-
+    os.environ['MLFLOW_TRACKING_URI']="http://0.0.0.0:5000"
 #    prediction("model/api_script.py")
-    seach_better_models('email_signature')
+    training('email_signature')
