@@ -12,7 +12,11 @@ Create a prefect deployment for the training server.
  
 `prefect deployment build training.py:training -n train-classifier -q ml`
 
+prefect is responsible for orchestrating the flows.
+There are several flows that can be registered and launched.
 
+- *training:* the training flow launches a task that will create a first model, track in  on the mlflow server and register it as Production model. This flow is launched one time. but can be started manually as needed.
+- *search for better models:*  
 ## How to use
 
 Clone this repo and run the below docker command:

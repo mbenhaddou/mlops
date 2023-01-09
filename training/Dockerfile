@@ -12,6 +12,7 @@ COPY . .
 EXPOSE 4200
 
 #RUN prefect config set PREFECT_API_URL=0.0.0.0:4200/api
-ENV MLFLOW_TRACKING_URI=http://mlflow:5000
+ENV MLFLOW_TRACKING_URI=host.docker.internal:5000
+#ENV MLFLOW_TRACKING_URI=https://mentis.io/mlflow
 
 CMD ["sh","-c","prefect orion start --host 0.0.0.0 & sleep 25 && prefect deployment apply training-deployment.yaml & sleep 15 && prefect agent start -q 'ml'"]
