@@ -1,0 +1,16 @@
+services:
+  service:
+    build: ./service
+  
+  training:
+    build: ./training
+    
+  prefect:
+    build: ./prefect
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service
+      - training
+  
+  
